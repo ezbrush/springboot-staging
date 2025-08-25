@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        STAGING_SERVER = 'user@192.168.0.16'
+        STAGING_SERVER = 'lenovo@192.168.1.231'
         ARTIFACT_NAME = 'demo-0.0.1-SNAPSHOT.jar'
         DEPLOY_PATH = '/home/user/staging/'
-        HEALTH_URL = 'http://192.168.0.16:8080/health'
+        HEALTH_URL = 'http://192.168.1.231:8080/health'
     }
     stages {
         stage('Clone Repository') {
