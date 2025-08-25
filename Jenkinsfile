@@ -3,7 +3,7 @@ pipeline {
     environment {
         STAGING_SERVER = 'lenovo@192.168.1.231'
         ARTIFACT_NAME = 'demo-0.0.1-SNAPSHOT.jar'
-        DEPLOY_PATH = '/home/user/staging/'
+        DEPLOY_PATH = '/home/lenovo/staging/'
         HEALTH_URL = 'http://192.168.1.231:8080/health'
     }
     stages {
