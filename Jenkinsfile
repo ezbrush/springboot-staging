@@ -47,7 +47,7 @@ pipeline {
                             fuser -k 8080/tcp || true
 
                             echo "Starting application with nohup..."
-                            nohup java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} \
+                            nohup /opt/jdk-24.0.2/bin/java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} \
                                 --server.port=8080 \
                                 --server.address=0.0.0.0 \
                                 > ${DEPLOY_PATH}nohup.out 2>&1 &
