@@ -32,24 +32,45 @@ pipeline {
                 sh 'mvn clean package -DskipTests'
             }
         }
+
+
         stage('Deploy to Staging') {
             steps {
-                // Usamos sshagent para usar la clave SSH
                 sshagent(['ubuntu-staging-key']) {
                     sh """
+                        # Copiar archivo JAR
                         scp target/${ARTIFACT_NAME} ${STAGING_SERVER}:${DEPLOY_PATH}
+
+                        # Conectarse por SSH y ejecutar despliegue
                         ssh ${STAGING_SERVER} '
+                            echo "Stopping any process on port 8080..."
                             fuser -k 8080/tcp || true
-                            nohup java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} --server.port=8080 --server.address=0.0.0.0 > ${DEPLOY_PATH}nohup.out 2>&1 &
+
+                            echo "Starting application with nohup..."
+                            nohup java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} \
+                                --server.port=8080 \
+                                --server.address=0.0.0.0 \
+                                > ${DEPLOY_PATH}nohup.out 2>&1 &
                         '
                     """
                 }
             }
         }
+
         stage('Validate Deployment') {
             steps {
-                sh 'sleep 30'
-                sh "curl --fail ${HEALTH_URL}"
+                sshagent(['ubuntu-staging-key']) {
+                    sh """
+                        echo "Waiting for application to start..."
+                        for i in {1..12}; do
+                            curl --fail http://192.168.1.231:8080/health && exit 0
+                            echo "App not ready yet ($i/12), retrying in 5s..."
+                            sleep 5
+                        done
+                        echo "Application did not start in time"
+                        exit 1
+                    """
+                }
             }
         }
     }
