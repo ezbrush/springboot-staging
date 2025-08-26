@@ -40,7 +40,7 @@ pipeline {
                         scp target/${ARTIFACT_NAME} ${STAGING_SERVER}:${DEPLOY_PATH}
                         ssh ${STAGING_SERVER} '
                             fuser -k 8080/tcp || true
-                            nohup java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} > ${DEPLOY_PATH}nohup.out 2>&1 &
+                            nohup java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} --server.port=8080 --server.address=0.0.0.0 > ${DEPLOY_PATH}nohup.out 2>&1 &
                         '
                     """
                 }
