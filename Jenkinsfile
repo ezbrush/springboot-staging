@@ -50,7 +50,7 @@ pipeline {
                             nohup /opt/jdk-24.0.2/bin/java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} \
                                 --server.port=8080 \
                                 --server.address=0.0.0.0 \
-                                > ${DEPLOY_PATH}nohup.out 2>&1 &
+                                > ${DEPLOY_PATH}nohup.log 2>&1 < /dev/null &
                         '
                     '''
                 }
