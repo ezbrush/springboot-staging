@@ -43,6 +43,7 @@ pipeline {
 
                         # Conectarse por SSH y ejecutar despliegue
                         ssh ${STAGING_SERVER} '
+                            source ~/.bashrc
                             echo "Stopping any process on port 8080..."
                             fuser -k 8080/tcp || true
 
@@ -61,6 +62,7 @@ pipeline {
             steps {
                 sshagent(['ubuntu-staging-key']) {
                     sh '''
+                    source ~/.bashrc
                     echo "Waiting for application to start..."
                     for i in $(seq 1 12); do
                         curl --fail http://192.168.1.231:8080/health && exit 0
