@@ -41,21 +41,19 @@ pipeline {
                         # Copiar archivo JAR
                         scp target/${ARTIFACT_NAME} ${STAGING_SERVER}:${DEPLOY_PATH}
 
-                        # Conectarse por SSH y ejecutar despliegue
+                        # Conectarse por SSH y ejecutar despliegue de forma segura
                         ssh ${STAGING_SERVER} '
-                            . /root/.bashrc
+                            cd ${DEPLOY_PATH}
+
                             echo "Stopping any process on port 8080..."
                             fuser -k 8080/tcp || true
 
-                            mkdir -p /home/lenovo/staging
-                            chown -R lenovo:lenovo /home/lenovo/staging
-                            chmod -R 755 /home/lenovo/staging
-                            
-                            echo "Starting application with nohup..."
-                            nohup /opt/jdk-24.0.2/bin/java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} \
+                            echo "Starting application..."
+                            # Ejecutar sin nohup, pero en background, redirigiendo entrada/salida
+                            /opt/jdk-24.0.2/bin/java -jar ${ARTIFACT_NAME} \
                                 --server.port=8080 \
                                 --server.address=0.0.0.0 \
-                                > ${DEPLOY_PATH}nohup.log 2>&1 < /dev/null &
+                                > app.log 2>&1 < /dev/null &
                         '
                     '''
                 }
