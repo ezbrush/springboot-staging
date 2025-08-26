@@ -47,6 +47,10 @@ pipeline {
                             echo "Stopping any process on port 8080..."
                             fuser -k 8080/tcp || true
 
+                            mkdir -p /home/lenovo/staging
+                            chown -R lenovo:lenovo /home/lenovo/staging
+                            chmod -R 755 /home/lenovo/staging
+                            
                             echo "Starting application with nohup..."
                             nohup /opt/jdk-24.0.2/bin/java -jar ${DEPLOY_PATH}${ARTIFACT_NAME} \
                                 --server.port=8080 \
